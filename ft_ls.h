@@ -27,5 +27,9 @@ typedef struct		s_opt
 
 void	sort_files(t_list *list);
 void	print_list(t_list *list);
+void	print_list_without_point(t_list *list);
+void	init_opt(t_opt *opt);
+void	check_opt(char *param, t_opt *opt);
+void	check_param(char **param, t_opt *opt);
 
 #endif

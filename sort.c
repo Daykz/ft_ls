@@ -6,16 +6,17 @@ void	sort_files(t_list *list)
 	t_list	*tmp;
 
 	tmp = list;
-	if (!tmp)
-		return;
-	while (tmp->next)
-		tmp = tmp->next;
-	while (tmp->prev)
+	if (tmp)
 	{
-		while (ft_strcmp((char *)tmp->data, (char *)tmp->prev->data) <= 0)
+		while (tmp->next)
 		{
-			list_swap_data((t_list *)tmp->data, (t_list *)tmp->prev->data);
+			if (ft_strcmp((char *)tmp->data, (char *)tmp->next->data) >= 0)
+			{
+				list_swap_data((t_list *)tmp, (t_list *)tmp->next);
+				tmp = list;
+			}
+			else 
+				tmp = tmp->next;
 		}
-		tmp = tmp->prev;
 	}
 }
