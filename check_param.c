@@ -17,6 +17,8 @@ void				check_opt(char *param, t_opt *opt)
 	int 	i;
 
 	i = 1;
+	if (!param[i])
+		ft_putstr("ls: -: No such file or directory");
 	while (param[i])
 	{
 		if (param[i] == 'a')
@@ -29,6 +31,8 @@ void				check_opt(char *param, t_opt *opt)
 			opt->t = 1;
 		else if (param[i] == 'l')
 			opt->l = 1;
+		else
+			printf("ls: illegal option -- %c\nusage: ls [-arRtl] [file ...]", param[i]);
 		i++;
 	}
 }
