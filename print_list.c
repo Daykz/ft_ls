@@ -25,11 +25,15 @@ void	print_list_without_point(t_list *list)
 			}
 			list = list->next;
 		}
+		ft_putchar('\n');
 	}
 }
 
 void	print_list(t_list *list)
 {
+	int	i;
+
+	i = 0;
 	if (list)
 	{
 		while (list)
@@ -37,6 +41,9 @@ void	print_list(t_list *list)
 			ft_putstr((char *)list->data);
 			ft_putchar(' ');
 			list = list->next;
+			i++;
 		}
+		ft_putchar('\n');
+		printf("i=%d\n", i);
 	}
 }

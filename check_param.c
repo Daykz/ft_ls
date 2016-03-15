@@ -44,17 +44,19 @@ void				init_opt(t_opt *opt)
 	opt->rmaj = 0;
 	opt->t = 0;
 	opt->l = 0;
+	opt->file = 0;
+	opt->repert = 0;
 }
 
-void				check_param(char **param, t_opt *opt)
+int 			check_param(char **param, t_opt *opt)
 {
 	int 			i;
 
 	i = 1;
-	while (param[i])
+	while (param[i][0] == '-')
 	{
-		if (param[i][0] == '-')
-			check_opt(param[i], opt);
+		check_opt(param[i], opt);
 		i++;
 	}
+	return (i);
 }
