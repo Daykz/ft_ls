@@ -18,7 +18,9 @@ void				check_opt(char *param, t_opt *opt)
 
 	i = 1;
 	if (!param[i])
+	{
 		ft_putstr("ls: -: No such file or directory");
+	}
 	while (param[i])
 	{
 		if (param[i] == 'a')
@@ -46,17 +48,25 @@ void				init_opt(t_opt *opt)
 	opt->l = 0;
 	opt->file = 0;
 	opt->repert = 0;
+	opt->if_file = 0;
+	opt->if_fold = 0;
 }
 
 int 			check_param(char **param, t_opt *opt)
 {
-	int 			i;
-
+	int 		i;
+	int 		j;
+	
 	i = 1;
-	while (param[i][0] == '-')
+	j = 1;
+	while (param[i])
 	{
-		check_opt(param[i], opt);
+		if (param[i][0] == '-')
+		{
+			check_opt(param[i], opt);
+			j++;
+		}
 		i++;
 	}
-	return (i);
+	return (j);
 }

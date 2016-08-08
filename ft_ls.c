@@ -10,9 +10,14 @@ t_list				*ft_ls(char *str, t_list *list, t_opt *opt)
 		list_add_next(&list, link_init((void *)ret->d_name));
 	closedir(dir);
 	if (opt->t == 1)
+	{
+		sort_files(list);
 		sort_times(list, str);
+	}
 	else
 		sort_files(list);
+	if (opt->r == 1)
+		reverse_sort_files(list);
 	return (list);
 }
 
@@ -28,14 +33,12 @@ int 				check_valid(char *param, t_opt *opt)
 	{
 		if (lstat(param, &buf) == -1)
 		{
-			printf("ls: %s: No such file or directory\n", param);
-			return (0);
+			return (-1);
 		}
 	}
 	else if (dir == NULL)
 	{
-		printf("ls: %s: No such file or directory\n", param);
-		return (0);
+		return (-1);
 	}
 	if (dir != NULL)
 	{
@@ -47,7 +50,7 @@ int 				check_valid(char *param, t_opt *opt)
 	return (1);
 }
 
-void 				easy_ls(t_list *list)
+void 				easy_ls(t_list *list, t_opt *opt)
 {
 	DIR				*dir;
 	struct dirent	*ret;
@@ -55,8 +58,18 @@ void 				easy_ls(t_list *list)
 	dir = opendir(".");
 	while ((ret = readdir(dir)))
 		list_add_next(&list, link_init((void *)ret->d_name));
-	sort_files(list);
-	print_list_without_point(list);
+	if (opt->l)
+		display_l_fold(".", opt);
+	else if (opt->a == 1)
+	{
+		display(list, opt);
+		print_list(list);
+	}
+	else
+	{
+		display(list, opt);
+		print_list_without_point(list);
+	}
 	closedir(dir);
 }
 
@@ -69,18 +82,18 @@ int 				main(int ac, char **av)
 
 	list = NULL;
 	if (ac == 1)
-		easy_ls(list);
+		easy_ls(list, &opt);
 	else
 	{
 		init_opt(&opt);
 		i = check_param(av, &opt);
-		while (i < ac)
+		if (i == ac)
+			easy_ls(list, &opt);
+		else
 		{
-			check_valid(av[i], &opt);
-			i++;
+			ls_files(av, &opt, i);
+			ls_folder(av, &opt, i);
 		}
-		ls_files(av, &opt);
-		ls_folder(av, &opt);
 	}
 	return (0);
 }

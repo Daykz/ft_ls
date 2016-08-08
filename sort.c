@@ -1,23 +1,50 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sort.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dmathe <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/05/11 17:53:47 by dmathe            #+#    #+#             */
+/*   Updated: 2016/05/11 17:53:49 by dmathe           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "ft_ls.h"
 
+t_list	*sort_opt(t_list *file, t_opt *opt)
+{
+	if (opt->t == 1)
+	{
+		sort_files(file);
+		sort_times_file(file);
+	}
+	else
+		sort_files(file);
+	if (opt->r == 1)
+		reverse_sort_files(file);
+	return (file);
+}
+
 void	reverse_sort_files(t_list *list)
 {
-	t_list	*tmp;
+	t_list *tmp;
+	int 	n;
+	int	 	i;
 
 	tmp = list;
-	if (tmp)
+	n = (int)list_size(tmp);
+	while (n >= 0)
 	{
-		while (tmp->next)
+		i = 1;
+		while (i < n && tmp->next)
 		{
-			if (ft_strcmp((char *)tmp->data, (char *)tmp->next->data) <= 0)
-			{
-				list_swap_data((t_list *)tmp, (t_list *)tmp->next);
-				tmp = list;
-			}
-			else 
-				tmp = tmp->next;
+			list_swap_data(tmp, tmp->next);
+			tmp = tmp->next;
+			i++;
 		}
+		n--;
+		tmp = list;
 	}
 }
 
@@ -30,9 +57,9 @@ void	sort_files(t_list *list)
 	{
 		while (tmp->next)
 		{
-			if (ft_strcmp((char *)tmp->data, (char *)tmp->next->data) >= 0)
+			if (ft_strcmp((char *)tmp->data, (char *)tmp->next->data) > 0)
 			{
-				list_swap_data((t_list *)tmp, (t_list *)tmp->next);
+				list_swap_data(tmp, tmp->next);
 				tmp = list;
 			}
 			else 
@@ -41,38 +68,93 @@ void	sort_files(t_list *list)
 	}
 }
 
+int				file_size(t_list *list)
+{
+	int			i;
+
+	i = 0;
+	while (list)
+	{
+		list = list->next;
+		i++;
+	}
+	return (i);
+}
+
+void			sort_file(t_list *list)
+{
+	t_list		*tmp;
+	int			i;
+
+	i = 0;
+	while (i < file_size(list))
+	{
+		tmp = list;
+		while (tmp && tmp->next)
+		{
+			if (tmp->date < tmp->next->date)
+				list_swap_data(tmp, tmp->next);
+			else
+				tmp = tmp->next;
+		}
+		i++;
+	}
+}
+
+void	times(t_list *list)
+{
+	t_list *tmp;
+
+	tmp = list;
+	while (tmp->next)
+	{
+		if (tmp->date < tmp->next->date)
+		{
+			list_swap_data(tmp, tmp->next);
+			tmp = list;
+		}
+		else
+			tmp = tmp->next;
+	}
+}
+
 void	sort_times(t_list *list, char *str)
 {
 	t_list *tmp;
 	char *path;
 	struct stat buf;
-	int		**tab;
-	int		i;
 
-	i = 0;
 	tmp = list;
-	tab = (int **)malloc(sizeof(int *) * 4096);
 	if (tmp)
 	{
-		while (tmp->next)
+		while (tmp)
 		{
 			path = (char *)malloc(sizeof(char) * (ft_strlen(str) + ft_strlen((char *)tmp->data) + 2));
 			ft_strcpy(path, str);
 			ft_strcat(path, "/");
 			ft_strcat(path, (char *)tmp->data);
-			lstat(path, &buf);
-			tab[i] = (int *)buf.st_mtime;
-			i++;
+			stat(path, &buf);
+			tmp->date = buf.st_mtime;
 			tmp = tmp->next;
-			ft_putstr("SLT");
 		}
-		i = 0;
-		while (tab[i])
+		times(list);
+	}
+}
+
+void	sort_times_file(t_list *file)
+{
+	t_list *temp;
+	struct stat buf;
+
+	temp = file;
+	if (temp)
+	{
+		while (temp)
 		{
-			printf("%d\n", *(tab)[i]);
-		ft_putstr("BANGBANG");
-			i++;
+			stat(temp->data, &buf);
+			temp->date = buf.st_mtime;
+			temp = temp->next;
 		}
-		print_list(list);
+		times(file);
 	}
 }

@@ -24,6 +24,8 @@ typedef struct		s_opt
 	int				t;
 	int				l;
 	int 			file;
+	int 			if_file;
+	int 			if_fold;
 	int 			repert;
 }					t_opt;
 
@@ -35,10 +37,13 @@ typedef	struct 		s_file
 	int 			link;
 	char 			*perms;
 	int 			size;
+	long int		timet;
 	char 			*times;
 
 }					t_file;
 
+void		display_l_fold(char *param, t_opt *opt);
+void	display(t_list *file, t_opt *opt);
 void	sort_files(t_list *list);
 void	reverse_sort_files(t_list *list);
 void	print_list(t_list *list);
@@ -48,9 +53,12 @@ void	check_opt(char *param, t_opt *opt);
 int 	check_param(char **param, t_opt *opt);
 void		dispatch(char **param, t_opt *opt);
 int 		check_valid(char *param, t_opt *opt);
-void		ls_files(char **param, t_opt *opt);
-void		ls_folder(char **param, t_opt *op);
+void		ls_files(char **param, t_opt *opt, int i);
+void		ls_folder(char **param, t_opt *op, int i);
 t_list		*ft_ls(char *str, t_list *list, t_opt *opt);
 void	sort_times(t_list *list, char *str);
+void	reverse_sort_files(t_list *list);
+void	sort_times_file(t_list *list);
+t_list	*sort_opt(t_list *file, t_opt *opt);
 
 #endif
