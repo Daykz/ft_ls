@@ -138,6 +138,9 @@ void		display_l_fold(char *param, t_opt *opt)
 
 	list = NULL;
 	list = ft_ls(param, list, opt);
+	if (opt->if_file || opt->if_error)
+		printf("\n%s:\n", param);
+	check_total(list, opt);
 	tmp = list;
 	if (!list)
 		return;
@@ -159,7 +162,12 @@ void		display_l_fold(char *param, t_opt *opt)
 		list = list->next;
 	}
 	if (!opt->l)
-		print_list(tmp);
+	{
+		if (opt->a)
+			print_list(tmp);
+		else
+			print_list_without_point(tmp);
+	}
 }
 
 void		ls_folder(char **param, t_opt *opt, int i)
@@ -168,8 +176,7 @@ void		ls_folder(char **param, t_opt *opt, int i)
 	{
 		opt->file = 0;
 		opt->repert = 0;
-		if (check_valid(param[i], opt) == -1)
-			printf("ls: %s: No such file or directory\n", param[i]);
+		check_valid(param[i], opt);
 		if (opt->repert == 1)
 		{
 			display_l_fold(param[i], opt);

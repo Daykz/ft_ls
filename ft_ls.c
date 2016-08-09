@@ -91,6 +91,7 @@ int 				main(int ac, char **av)
 			easy_ls(list, &opt);
 		else
 		{
+			ls_error(av, &opt, i);
 			ls_files(av, &opt, i);
 			ls_folder(av, &opt, i);
 		}

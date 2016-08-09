@@ -50,6 +50,7 @@ void				init_opt(t_opt *opt)
 	opt->repert = 0;
 	opt->if_file = 0;
 	opt->if_fold = 0;
+	opt->if_error = 0;
 }
 
 int 			check_param(char **param, t_opt *opt)

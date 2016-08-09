@@ -26,6 +26,7 @@ typedef struct		s_opt
 	int 			file;
 	int 			if_file;
 	int 			if_fold;
+	int 			if_error;
 	int 			repert;
 }					t_opt;
 
@@ -42,6 +43,10 @@ typedef	struct 		s_file
 
 }					t_file;
 
+void	ls_error(char **param, t_opt *opt, int i);
+void		init_file(t_file *file);
+void	check_total(t_list *list, t_opt *opt);
+int		count_total(int	len);
 void		display_l_fold(char *param, t_opt *opt);
 void	display(t_list *file, t_opt *opt);
 void	sort_files(t_list *list);
