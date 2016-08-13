@@ -38,14 +38,16 @@ typedef	struct 		s_file
 	int 			link;
 	char 			*perms;
 	int 			size;
+	int 			total;
 	long int		timet;
 	char 			*times;
 
 }					t_file;
 
+int 	check_if_empty(char *str, t_opt *opt);
 void	ls_error(char **param, t_opt *opt, int i);
 void		init_file(t_file *file);
-void	check_total(t_list *list, t_opt *opt);
+void	check_total(char *param, t_list *list, t_opt *opt);
 int		count_total(int	len);
 void		display_l_fold(char *param, t_opt *opt);
 void	display(t_list *file, t_opt *opt);

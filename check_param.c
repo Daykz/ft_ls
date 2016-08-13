@@ -34,7 +34,12 @@ void				check_opt(char *param, t_opt *opt)
 		else if (param[i] == 'l')
 			opt->l = 1;
 		else
-			printf("ls: illegal option -- %c\nusage: ls [-arRtl] [file ...]", param[i]);
+		{
+			ft_putstr("ls: illegal option -- ");
+			ft_putchar(param[i]);
+			ft_putchar('\n');
+			ft_putstr("usage: ls [-arRtl] [file ...]");
+		}
 		i++;
 	}
 }
@@ -51,6 +56,7 @@ void				init_opt(t_opt *opt)
 	opt->if_file = 0;
 	opt->if_fold = 0;
 	opt->if_error = 0;
+	opt->if_fold = 0;
 }
 
 int 			check_param(char **param, t_opt *opt)

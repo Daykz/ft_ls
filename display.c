@@ -12,38 +12,90 @@
 
 #include "ft_ls.h"
 
+#include "stdio.h"
+
+int 	check_if_empty(char *str, t_opt *opt)
+{
+	DIR 	*dir;
+	struct dirent *ret;
+	t_list	*empty;
+	char 	*tmp;
+
+	empty = NULL;
+	dir = opendir(str);
+	while ((ret = readdir(dir)))
+		list_add_next(&empty, link_init((void *)ret->d_name));
+	closedir(dir);
+	while (empty)
+	{
+		tmp = empty->data;
+		if (tmp[0] != '.' && !opt->a)
+			return (0);
+		empty = empty->next;
+	}
+	return (1);
+}
+
 void	ls_error(char **param, t_opt *opt, int i)
 {
+	t_list *error;
+
+	error = NULL;
 	while (param[i])
 	{
 		if (check_valid(param[i], opt) == -1)
 		{
-			printf("ls: %s: No such file or directory\n", param[i]);
+			list_add_next(&error, link_init(param[i]));
 			opt->if_error = 1;
 		}
 		i++;
 	}
+	error = sort_opt(error, opt);
+	while (error)
+	{
+		opt->if_error++;
+		ft_putstr("ls: ");
+		ft_putstr(error->data);
+		ft_putstr(": No such file or directory");
+		ft_putchar('\n');
+		error = error->next;
+	}
 }
 
-void	check_total(t_list *list, t_opt *opt)
+void	check_total(char *param, t_list *list, t_opt *opt)
 {
 	struct stat buf;
-	static int 	total = 0;
+	int 	total;
 	char 		*str;
+	int 		size;
+	char *tmp;
 
-	(void)opt;
+	total = 0;
 	while (list)
 	{
+		str = NULL;
+		tmp = NULL;
 		str = list->data;
+		tmp = (char *)malloc(sizeof(char) * (ft_strlen(param) + ft_strlen((char *)list->data) + 2));
+		ft_strcpy(tmp, param);
+		ft_strcat(tmp, "/");
+		ft_strcat(tmp, str);
 		if (str[0] != '.' || (str[0] == '.' && opt->a == 1))
 		{
-			stat((char *)list->data, &buf);
+			stat(tmp, &buf);
+			size = buf.st_size;
 			total += count_total(buf.st_size);
 		}
 		list = list->next;
 	}
-	if (opt->l)
-		printf("total %d\n", total);
+	if (opt->l && !check_if_empty(param, opt))
+	{
+		if (opt->if_fold > 1)
+			ft_putchar('\n');
+		ft_putstr("total ");
+		ft_putnbr(total);
+		ft_putchar('\n');
+	}
 }
 
 int		count_total(int	len)

@@ -71,7 +71,7 @@ void		display_fold(char *param, t_opt *opt)
 	struct stat	buf;
 	int 	i;
 
-	i = 0;
+	i = 8;
 	fold = (t_file *)malloc(sizeof(t_file));
 	if (fold == NULL)
 		exit (1);
@@ -85,8 +85,23 @@ void		display_fold(char *param, t_opt *opt)
 	fold->gid = ft_strdup(getgrgid(buf.st_gid)->gr_name);
 	fold->size = buf.st_size;
 	fold->times = fmt(ctime(&buf.st_mtime));
-	printf("%c%s  %d %s  %s", fold->type, fold->perms, fold->link, fold->uid, fold->gid);
-	printf("%8d %s ", fold->size, fold->times);
+	ft_putchar(fold->type);
+	ft_putstr(fold->perms);
+	ft_putstr("  ");
+	ft_putnbr(fold->link);
+	ft_putchar(' ');
+	ft_putstr(fold->uid);
+	ft_putstr("  ");
+	ft_putstr(fold->gid);
+	while (i > (int)ft_strlen(ft_itoa(fold->size)))
+	{
+		ft_putchar(' ');
+		i--;	
+	}
+	ft_putnbr(fold->size);
+	ft_putchar(' ');
+	ft_putstr(fold->times);
+	ft_putchar(' ');
 }
 
 void		display_file(char *param, t_opt *opt)
@@ -95,7 +110,7 @@ void		display_file(char *param, t_opt *opt)
 	struct stat	buf;
 	int 	i;
 
-	i = 0;
+	i = 8;
 	file = (t_file *)malloc(sizeof(t_file));
 	if (file == NULL)
 		exit (1);
@@ -109,9 +124,25 @@ void		display_file(char *param, t_opt *opt)
 	file->gid = ft_strdup(getgrgid(buf.st_gid)->gr_name);
 	file->size = buf.st_size;
 	file->times = fmt(ctime(&buf.st_mtime));
-	printf("%c%s  %d %s  %s", file->type, file->perms, file->link, file->uid, file->gid);
-	printf("%8d %s ", file->size, file->times);
-	printf("%s\n", param);
+	ft_putchar(file->type);
+	ft_putstr(file->perms);
+	ft_putstr("  ");
+	ft_putnbr(file->link);
+	ft_putchar(' ');
+	ft_putstr(file->uid);
+	ft_putstr("  ");
+	ft_putstr(file->gid);
+	while (i > (int)ft_strlen(ft_itoa(file->size)))
+	{
+		ft_putchar(' ');
+		i--;	
+	}
+	ft_putnbr(file->size);
+	ft_putchar(' ');
+	ft_putstr(file->times);
+	ft_putchar(' ');
+	ft_putstr(param);
+	ft_putstr("\n");
 }
 
 void		display_l_file(t_list *file, t_opt *opt)
@@ -134,13 +165,12 @@ void		display_l_fold(char *param, t_opt *opt)
 	t_list	*tmp;
 	t_list	*list;
 	char	*str;
-	struct stat	buf;
+	int 	i;
 
+	i = 0;
 	list = NULL;
 	list = ft_ls(param, list, opt);
-	if (opt->if_file || opt->if_error)
-		printf("\n%s:\n", param);
-	check_total(list, opt);
+	check_total(param, list, opt);
 	tmp = list;
 	if (!list)
 		return;
@@ -152,11 +182,11 @@ void		display_l_fold(char *param, t_opt *opt)
 		ft_strcat(str, (char *)list->data);
 		if (str[ft_strlen(param) + 1] != '.' || (str[ft_strlen(param) + 1] == '.' && opt->a == 1))
 		{
-			stat(str, &buf);
 			if (opt->l)
 			{
 				display_fold(str, opt);
-				printf("%s\n", (char *)list->data);
+				ft_putstr((char *)list->data);
+				ft_putstr("\n");
 			}
 		}
 		list = list->next;
@@ -172,6 +202,9 @@ void		display_l_fold(char *param, t_opt *opt)
 
 void		ls_folder(char **param, t_opt *opt, int i)
 {
+	t_list	*fold;
+
+	fold = NULL;
 	while (param[i])
 	{
 		opt->file = 0;
@@ -179,9 +212,26 @@ void		ls_folder(char **param, t_opt *opt, int i)
 		check_valid(param[i], opt);
 		if (opt->repert == 1)
 		{
-			display_l_fold(param[i], opt);
+			opt->if_fold++;
+			list_add_next(&fold, link_init(param[i]));
 		}
 		i++;
+	}
+	fold = sort_opt(fold, opt);
+	while (fold)
+	{
+		if (opt->if_error || opt->if_file)
+		{
+			ft_putstr("\n");
+			ft_putstr(fold->data);
+			ft_putchar(':');
+			if (check_if_empty(fold->data, opt))
+			{
+				ft_putstr("\n");
+			}
+		}
+		display_l_fold(fold->data, opt);
+		fold = fold->next;
 	}
 }
 
