@@ -28,6 +28,7 @@ typedef struct		s_opt
 	int 			if_fold;
 	int 			if_error;
 	int 			repert;
+	int 			if_rmaj;
 }					t_opt;
 
 typedef	struct 		s_file
@@ -44,6 +45,12 @@ typedef	struct 		s_file
 
 }					t_file;
 
+void		display_l_file(t_list *file, t_opt *opt);
+void		disp_fold(t_file *fold);
+void		total2(char *param, int total, t_opt *opt);
+void	print_l(t_list *list, t_opt *opt);
+int		check_rmaj(char *str, t_opt *opt);
+void		begin_disp(t_list *fold, t_opt *opt);
 int 	check_if_empty(char *str, t_opt *opt);
 void	ls_error(char **param, t_opt *opt, int i);
 void		init_file(t_file *file);

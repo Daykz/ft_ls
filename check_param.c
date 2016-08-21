@@ -12,16 +12,14 @@
 
 #include "ft_ls.h"
 
-void				check_opt(char *param, t_opt *opt)
+void		check_opt(char *param, t_opt *opt)
 {
-	int 	i;
+	int		i;
 
-	i = 1;
+	i = 0;
 	if (!param[i])
-	{
 		ft_putstr("ls: -: No such file or directory");
-	}
-	while (param[i])
+	while (param[++i])
 	{
 		if (param[i] == 'a')
 			opt->a = 1;
@@ -40,11 +38,10 @@ void				check_opt(char *param, t_opt *opt)
 			ft_putchar('\n');
 			ft_putstr("usage: ls [-arRtl] [file ...]");
 		}
-		i++;
 	}
 }
 
-void				init_opt(t_opt *opt)
+void		init_opt(t_opt *opt)
 {
 	opt->a = 0;
 	opt->r = 0;
@@ -57,13 +54,14 @@ void				init_opt(t_opt *opt)
 	opt->if_fold = 0;
 	opt->if_error = 0;
 	opt->if_fold = 0;
+	opt->if_rmaj = 0;
 }
 
-int 			check_param(char **param, t_opt *opt)
+int			check_param(char **param, t_opt *opt)
 {
-	int 		i;
-	int 		j;
-	
+	int		i;
+	int		j;
+
 	i = 1;
 	j = 1;
 	while (param[i])

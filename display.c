@@ -12,15 +12,14 @@
 
 #include "ft_ls.h"
 
-#include "stdio.h"
-
-int 	check_if_empty(char *str, t_opt *opt)
+int					check_if_empty(char *str, t_opt *opt)
 {
-	DIR 	*dir;
-	struct dirent *ret;
-	t_list	*empty;
-	char 	*tmp;
+	DIR				*dir;
+	struct dirent	*ret;
+	t_list			*empty;
+	char			*tmp;
 
+	(void)opt;
 	empty = NULL;
 	dir = opendir(str);
 	while ((ret = readdir(dir)))
@@ -29,16 +28,16 @@ int 	check_if_empty(char *str, t_opt *opt)
 	while (empty)
 	{
 		tmp = empty->data;
-		if (tmp[0] != '.' && !opt->a)
+		if (tmp[0] != '.' || (tmp[0] == '.' && opt->a))
 			return (0);
 		empty = empty->next;
 	}
 	return (1);
 }
 
-void	ls_error(char **param, t_opt *opt, int i)
+void				ls_error(char **param, t_opt *opt, int i)
 {
-	t_list *error;
+	t_list			*error;
 
 	error = NULL;
 	while (param[i])
@@ -62,24 +61,24 @@ void	ls_error(char **param, t_opt *opt, int i)
 	}
 }
 
-void	check_total(char *param, t_list *list, t_opt *opt)
+void				check_total(char *param, t_list *list, t_opt *opt)
 {
-	struct stat buf;
-	int 	total;
-	char 		*str;
-	int 		size;
-	char *tmp;
+	struct stat		buf;
+	int				total;
+	char			*str;
+	int				size;
+	char			*tmp;
 
 	total = 0;
 	while (list)
 	{
-		str = NULL;
 		tmp = NULL;
 		str = list->data;
-		tmp = (char *)malloc(sizeof(char) * (ft_strlen(param) + ft_strlen((char *)list->data) + 2));
+		tmp = (char *)malloc(sizeof(char) * \
+			(ft_strlen(param) + ft_strlen((char *)list->data) + 2));
 		ft_strcpy(tmp, param);
 		ft_strcat(tmp, "/");
-		ft_strcat(tmp, str);
+		ft_strcat(tmp, list->data);
 		if (str[0] != '.' || (str[0] == '.' && opt->a == 1))
 		{
 			stat(tmp, &buf);
@@ -88,20 +87,13 @@ void	check_total(char *param, t_list *list, t_opt *opt)
 		}
 		list = list->next;
 	}
-	if (opt->l && !check_if_empty(param, opt))
-	{
-		if (opt->if_fold > 1)
-			ft_putchar('\n');
-		ft_putstr("total ");
-		ft_putnbr(total);
-		ft_putchar('\n');
-	}
+	total2(param, total, opt);
 }
 
-int		count_total(int	len)
+int					count_total(int len)
 {
-	int	size;
-	int	n;
+	int				size;
+	int				n;
 
 	n = 0;
 	size = 512;
@@ -115,7 +107,7 @@ int		count_total(int	len)
 	return (n + 1);
 }
 
-void	display(t_list *file, t_opt *opt)
+void				display(t_list *file, t_opt *opt)
 {
 	if (opt->t == 1)
 	{
