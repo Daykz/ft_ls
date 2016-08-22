@@ -1,6 +1,6 @@
 NAME = ft_ls
 
-SRCS = ft_ls.c sort.c print_list.c check_param.c
+SRCS = ft_ls.c sort.c print_list.c check_param.c options.c display.c disp.c stat.c sortbis.c
 
 OBJS =		$(SRCS:.c=.o)
 
